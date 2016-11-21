@@ -48,7 +48,7 @@ var WarningBox = function(containerTag){
 				containerTag.MaterialSnackbar.showSnackbar({
 					message: __message,
 					actionText: 'X',
-					timeout: 10000,
+					timeout: 3000,
 					actionHandler: function(event){
 						$(this.parentElement).attr('aria-hidden', true).removeClass('mdl-snackbar--active');
 
@@ -390,7 +390,7 @@ function loadFriendList(dialog, id){
 				temp = $(list.children('li.mdl-list__item')[index]);
 
 				temp.append(' <span class="mdl-list__item-primary-content"><i class="material-icons  mdl-list__item-avatar">person</i>' + friend.getNome()  + '</span>');
-				temp.append('<span class="mdl-list__item-secondary-action">' + generateButtonString('removeFriend(\'' + id + '\', \'' + friend.getNetworkID() + '\')', '<i class="material-icons">sentiment_very_dissatisfied</i>', 'mdl-button mdl-js-button mdl-button--icon') + '</span>')
+				temp.append('<span class="mdl-list__item-secondary-action">' + generateButtonString('removeFriend(\'' + id + '\', \'' + friend.getNetworkID() + '\', this)', '<i class="material-icons">sentiment_very_dissatisfied</i>', 'mdl-button mdl-js-button mdl-button--icon') + '</span>')
 
 			}
 			
@@ -451,6 +451,46 @@ function loadAvailableFriends(dialog, id){
 	}
 }
 
+function loadRemoveUserInfo(dialog, userId){
+	var container = $(dialog),
+		title = container.find('h4.mdl-dialog__title'),
+		user = network.main.getRegisterById(userId);
+
+	title.text('Remover ' + user.vertice.getContent().getNome());
+	$(dialog).attr('data-id', userId);
+}
+
+function onRemoveUser(oSource){
+	var userId = $(oSource).parents('dialog').attr('data-id'),
+		user = network.main.getRegisterById(userId),
+		userInfo,
+		arestas;
+
+	if(user){
+		userInfo = user.vertice.getContent(),
+		arestas = user.vertice.getArestas();
+
+		while(user.vertice.getArestas().length > 0){
+			var aresta = arestas[0];
+
+			removeFriend(userId, aresta.getContent().getNetworkID());
+		}
+
+		network.main.removeRegister(user);
+		network.manager.registeredManager.removeValue();
+
+		dialog = document.querySelector('#' + $(oSource).parents('dialog').attr('id'));
+		dialog.close();
+
+		renderRegisteredList();
+
+		warningBox.setMessage('O usuário ' + userInfo.getNome() + ' foi removido da rede.', 'success');
+
+	} else {
+		warningBox.setMessage('Erro ao recuperar informações de usuário, tente novamente mais tarde.', 'danger');
+	}
+}
+
 function onCreateRegister(oSource){
 	var dialogInputs = $('#register-dialog').find('form input.mdl-textfield__input'),
 		objectValidated = {},
@@ -473,6 +513,9 @@ function onCreateRegister(oSource){
 
 	dialog = document.querySelector('#' + $(oSource).parents('dialog').attr('id'));
 	dialog.close();
+
+	renderRegisteredList();
+
 	warningBox.setMessage('Novo usuário: ' + objectValidated.name + ' acaba de ser registrado!', 'success');
 }
 
@@ -545,7 +588,7 @@ function onAddMultipleFriends(oSource){
 	
 }
 
-function removeFriend(userId, targetId){
+function removeFriend(userId, targetId, oSource){
 	var user = network.main.getRegisterById(userId),
 		userInfo,
 		friend,
@@ -559,10 +602,9 @@ function removeFriend(userId, targetId){
 
 			if(user.vertice.removeAresta(friend.vertice)){
 				friend.vertice.removeAresta(user.vertice);
-				warningBo0x.setMessage(userInfo.getNome() + ' e  ' + friendInfo.getNome() + ' não são mais amigos.', 'success');
+				warningBox.setMessage(userInfo.getNome() + ' e  ' + friendInfo.getNome() + ' não são mais amigos.', 'success');
 				renderRegisteredList();
 				network.manager.friendshipManager.removeValue();
-				debugger;
 			} else {
 				warningBox.setMessage('Parece que ' + userInfo.getNome() + ' e ' + friendInfo.getNome() + ' não são amigos!');
 			}
@@ -602,7 +644,7 @@ function renderRegisteredList(){
 			temp.append('<td>' + user.getNome() + '</td>');
 			temp.append('<td>' + generateButtonString('showDialog(\'#friendship-dialog\', loadFriendList,\'' + id + '\')', vertice.getArestas().length) + '</td>');
 			temp.append('<td>' + generateButtonString('showDialog(\'#addFriend-dialog\', loadAvailableFriends, \'' + id + '\')', '<i class="material-icons">add</i>') + '</td>');
-			temp.append('<td>' + generateButtonString('showRemoveFriendDialog(' + id + ')', '<i class="material-icons">close</i>', 'mdl-button mdl-js-button mdl-button--icon') + '</td>');
+			temp.append('<td>' + generateButtonString('showDialog(\'#removeUser-dialog\', loadRemoveUserInfo, \'' + id + '\')', '<i class="material-icons">close</i>', 'mdl-button mdl-js-button mdl-button--icon') + '</td>');
 			
 		}
 	} else {

@@ -76,6 +76,10 @@ var Network = Network || function(){
 					warningBox.setMessage('Não foi possível adicionar o registro: Erro - ' + typeof vertice + ' não é um vértice.', 'danger');
 				}
 			}
+		},
+
+		removeRegister : function(user){
+			_registros.splice(_registros.indexOf(user), 1);
 		}
 	}
 }
