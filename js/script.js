@@ -46,7 +46,7 @@ for(elemento in matrizExemplo){
 	warningBox = new WarningBox('#warning.mdl-js-snackbar'),
 
 	//renderListOfGraphs(table, verticesList);
-	loadExemplosRegistros();
+	//loadExemplosRegistros();
 	
 
 	tableChildren =  table.children('tbody').children('tr');
