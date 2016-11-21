@@ -1,0 +1,92 @@
+/* General Content */
+.roboto, 
+.header-container{
+	font-family: 'Roboto', sans-serif;
+}
+
+.header-container{
+	background-color: #00838F;
+	padding: 5px !important;
+	margin: 0px !important;
+	color: #EEEEEE;
+	display: block;
+}
+
+.header-container h1{
+	font-weight: bolder;
+}
+
+
+/* MDL Adapters */
+/* Rules for sizing the icon. */
+.material-icons.md-18 { font-size: 18px; }
+.material-icons.md-24 { font-size: 24px; }
+.material-icons.md-36 { font-size: 36px; }
+.material-icons.md-48 { font-size: 48px; }
+
+/* Rules for using icons as black on a light background. */
+.material-icons.md-dark { color: rgba(0, 0, 0, 0.54); }
+.material-icons.md-dark.md-inactive { color: rgba(0, 0, 0, 0.26); }
+
+/* Rules for using icons as white on a dark background. */
+.material-icons.md-light { color: rgba(255, 255, 255, 1); }
+.material-icons.md-light.md-inactive { color: rgba(255, 255, 255, 0.3); }
+
+.gnn-main-button{
+	z-index: 1000;
+}
+
+.graph-snackbar-icon-centralizer{
+	padding:10px 2px 10px 12px;
+	color: #FAFAFA;
+}
+
+.hidden{
+	display: none;
+}
+
+.gnn-table-header-icon{
+	padding-top: 5px;
+}
+
+.gnn-table-header-content{
+	margin-top: 5px !important; 
+}
+
+.gnn-hoz-box{
+	float: right;
+}
+
+.gnn-icon-container{
+	text-align: right;
+}
+
+.gnn-leftText-container{
+	text-align: left;
+}
+
+.gnn-dialog-40{
+	width: 40%;
+}
+
+.gnn-fill-width{
+	width: 100%;
+}
+
+.gnn-maxSize-container{
+	max-height: 18rem;
+	overflow-y: auto;
+}
+
+.gnn-minWid-container{
+	min-width: 32rem;
+}
+
+#table--list-registered, #table--list-friendAvailable{
+	width: 80%;
+	margin: 0px auto;
+}
+
+#table--list-registered tbody tr td{
+	text-align: center;
+}

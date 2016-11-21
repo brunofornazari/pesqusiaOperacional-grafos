@@ -2,17 +2,221 @@
 <html>
 		<head>
 			<meta charset="UTF-8" />
-			<link href="css/bootstrap.css" rel="stylesheet" />
+			<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+			<link rel="stylesheet" href="https://code.getmdl.io/1.2.1/material.teal-red.min.css" />
+			<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+      		<link href="css/stylesheet.css"
+      rel="stylesheet">
+			<script defer src="https://code.getmdl.io/1.2.1/material.min.js"></script>	
+			<script defer src="js/libs/jquery-3.1.1.min.js"></script>	
+			<script defer src="js/grafos.js"></script>	
+			<script defer src="js/network.js"></script>	
+			<script defer src="js/vertices.js"></script>	
+			<script defer src="js/util.js"></script>	
+			<script defer src="js/registro.js"></script>
+			<script defer src="js/script.js"></script>	
+			<script src="js/libs/dialog-polyfill.js"></script>
+ 			
+ 			<link rel="stylesheet" type="text/css" href="css/dialog-polyfill.css" />
 		</head>
 		<body>
+			<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+				<header class="mdl-layout__header mdl-layout__header--waterfall">
+					<div class="mdl-layout__header-row">
+						<span class="mdl_layout__title">
+							<h3>
+								<i class="material-icons">donut_small</i> Graph.Network
+							</h3>
+						</span>
+						<div class="mdl-layout-spacer"></div>
+						
+						<div class="material-icons mdl-badge mdl-badge--overlap" 
+								id="registeredBadge" 
+								data-badge="0">
+									face
+						</div>
 
-			
-		
-			<script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>	
-			<script type="text/javascript" src="js/grafos.js"></script>
-			<script type="text/javascript" src="js/vertices.js"></script>
-			<script type="text/javascript" src="js/util.js"></script>		
-			<script type="text/javascript" src="js/script.js"></script>	
+						<div class="material-icons mdl-badge mdl-badge--overlap" 
+							id="friendshipsBadge" 
+							data-badge="0">
+								timeline
+						</div>
+					</div>
+				</header>
+				
+				<div class="mdl-layout__drawer">
+					<span class="mdl-layout-title">Gerenciar Rede</span>
+				    <nav class="mdl-navigation">
+				      <a class="mdl-navigation__link" onclick="showDialog('#register-dialog')">
+				      	<i class="material-icons">add</i> Novo Usuário
+				      </a>
+				      <a class="mdl-navigation__link" href="">
+				      	<i class="material-icons">track_changes</i> Calcular Distânica
+				      </a>
+				      <a class="mdl-navigation__link" href="">
+				      	<i class="material-icons">view_list</i> Gerar Matriz Adjacência
+				      </a>
+				      <a class="mdl-navigation__link" onclick="renderRegisteredList()">
+				      	<i class="material-icons">list</i> Ver Usuários
+				      </a>
+				    </nav>
+				</div>
+
+				<main class="mdl-layout__content">
+					<table id="table" class="mdl-data-table mdl-js-data-table mdl-shadow--2dp hidden">
+						<tbody>
+
+						</tbody>
+					</table>
+
+					<table id="table--list-registered"
+							class="mdl-data-table mdl-js-data-table mdl-shadow--2dp hidden">
+							<thead>
+								<tr>
+									<th class="mdl-data-table__cell--non-numeric">
+										<div class="mdl-grid">
+											<div class="mdl-cell mdl-cell--6-col gnn-icon-container">
+												<i class="material-icons gnn-table-header-icon">face</i> 
+											</div>
+											<div class="mdl-cell mdl-cell--6-col gnn-leftText-container">
+												<h6 class="gnn-table-header-content">Usuário</h6>
+											</th>
+										</div>
+									</th>
+									<th>
+										<div class="mdl-grid">
+											<div class="mdl-cell mdl-cell--6-col gnn-icon-container">
+												<i class="material-icons gnn-table-header-icon">group</i> 
+											</div>
+											<div class="mdl-cell mdl-cell--6-col gnn-leftText-container">
+												<h6 class="gnn-table-header-content">Amigos</h6>
+											</th>
+										</div>
+									<th>
+										<div class="mdl-grid">
+											<div class="mdl-cell mdl-cell--6-col gnn-icon-container">
+												<i class="material-icons gnn-table-header-icon">person_add</i> 
+											</div>
+											<div class="mdl-cell mdl-cell--6-col gnn-leftText-container">
+												<h6 class="gnn-table-header-content">Adicionar Amigo</h6>
+											</th>
+										</div>
+									</th>
+									
+									<th>
+										<div class="mdl-grid">
+											<div class="mdl-cell mdl-cell--6-col gnn-icon-container">
+												<i class="material-icons gnn-table-header-icon">close</i> 
+											</div>
+											<div class="mdl-cell mdl-cell--6-col gnn-leftText-container">
+												<h6 class="gnn-table-header-content">Excluir Usuário</h6>
+											</th>
+										</div>
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								
+							</tbody>
+					</table>
+
+					
+  				</main>
+
+  				<dialog class="mdl-dialog" id="register-dialog">
+  					<h4 class="mdl-dialog__title">Registrar Novo Usuário</h4>
+  					<div class="mdl-dialog__content">
+  						 <form action="#">
+  						 	<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+  						 		<input class="mdl-textfield__input" 
+  						 				type="text" 
+  						 				name="name" 
+  						 				id="inputName--registerDialog" 
+  						 				validator-schematics="INPUT__TXT" 
+  						 				data-mandatory="true"
+  						 				data-name="Nome">
+  						 		<label class="mdl-textfield__label" for="inputName--registerDialog">Nome:</label>
+  						 	</div>
+
+  						 	<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+  						 		<input class="mdl-textfield__input" 
+  						 				type="text" 
+  						 				pattern="-?[0-9]*(\.[0-9]+)?" 
+  						 				name="age" 
+  						 				id="inputAge--registerDialog"
+  						 				validator-schematics="INPUT__NUMINT" 
+  						 				data-mandatory="true"
+  						 				data-name="Idade">
+  						 		<label class="mdl-textfield__label" for="inputAge--registerDialog">Idade:</label>
+  						 		<span class="mdl-textfield__error">Idade deve ser um número!</span>
+  						 	</div>
+  						 </form>
+  					</div>
+  					<div class="mdl-dialog__actions">
+  						<button type="button" class="mdl-button" onclick="onCreateRegister(this)">Adicionar</button>
+
+  						<button type="button" class="mdl-button close">Cancelar</button>
+  					</div>
+  				</dialog>
+			</div>
+
+			<!-- Friendship Dialog -->
+
+			<dialog class="mdl-dialog gnn-minWid-container" id="friendship-dialog">
+				<h4 class="mdl-dialog__title"></h4>
+				<div class="mdl-dialog__content">
+					<ul class="mdl-list"></ul>
+				</div>
+				<div class="mdl-dialog__actions">
+					<button type="button" class="mdl-button close">Cancelar</button>
+				</div>
+			</dialog>
+
+			<!-- Add Friend Dialog -->
+
+			<dialog class="mdl-dialog gnn-minWid-container" id="addFriend-dialog">
+				<h4 class="mdl-dialog__title"></h4>
+				<div class="mdl-dialog__content">
+					<div class="gnn-maxSize-container">
+						<table id="table--list-friendAvailable" class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+							<thead>
+								<tr>
+									<th>
+
+									</th>
+									<th class="mdl-data-table__cell--non-numeric">
+										Nome
+									</th>
+									<th>
+										Adicionar
+									</th>
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
+					</div>
+				</div>
+				<div class="mdl-dialog__actions">
+				<button type="button" class="mdl-button" onclick="onAddMultipleFriends(this)">Adicionar Selecionados</button>
+
+					<button type="button" class="mdl-button close">Cancelar</button>
+				</div>
+			</dialog>
+
+			<!-- Warning Box -->
+			<div id="warning" aria-live="assertive" aria-atomic="true" aria-relevant="text" class="mdl-snackbar 	mdl-js-snackbar">
+				<i class="material-icons graph-snackbar-icon-centralizer"></i>
+				<div class="mdl-snackbar__text">
+					
+				</div>
+				<button type="button" class="mdl-snackbar__action"></button>
+				
+			</div>
+
+
 		</body>
+
+		
 
 </html>		

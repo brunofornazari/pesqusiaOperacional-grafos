@@ -34,6 +34,22 @@ var Vertice = function(content, arestas){
 			}
 
 			_arestas.push(aresta);
+		},
+
+		removeAresta : function(aresta){
+			for(var i = 0; i < _arestas.length; i += 1){
+				var tempAresta = _arestas[i];
+
+				if(tempAresta.getContent().getNetworkID() == aresta.getContent().getNetworkID()){
+					_arestas.splice(i, 1);
+					return true;
+				}
+			}
+
+			return false;
+		},
+		getContextName : function(){
+			return 'Vertice';
 		}
 	}
 };
