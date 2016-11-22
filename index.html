@@ -51,12 +51,12 @@
 				      <a class="mdl-navigation__link" onclick="showDialog('#register-dialog')">
 				      	<i class="material-icons">add</i> Novo Usuário
 				      </a>
-				      <a class="mdl-navigation__link" href="">
+				      <a class="mdl-navigation__link" onclick="showDialog('#shortest-dialog', renderShortestWayTable)">
 				      	<i class="material-icons">track_changes</i> Calcular Distânica
 				      </a>
-				      <a class="mdl-navigation__link" href="">
+				      <!--<a class="mdl-navigation__link" href="">
 				      	<i class="material-icons">view_list</i> Gerar Matriz Adjacência
-				      </a>
+				      </a>-->
 				      <a class="mdl-navigation__link" onclick="renderRegisteredList()">
 				      	<i class="material-icons">list</i> Ver Usuários
 				      </a>
@@ -215,6 +215,21 @@
 					<button type="button" class="mdl-button close">Cancelar</button>
 				</div>
 			</dialog>
+
+			<!-- Matriz menor caminho -->
+			<dialog class="mdl-dialog gnn-minWid-container gnn-dialog-60" id="shortest-dialog">
+				<h4 class="mdl-dialog__title">Matriz de Menor caminho</h4>
+				<div class="mdl-dialog__content">
+					<table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+						<thead></thead>
+						<tbody></tbody>
+					</table>
+				</div>
+				<div class="mdl-dialog__actions">
+					<button type="button" class="mdl-button close">Cancelar</button>
+				</div>
+			</dialog>
+
 
 			<!-- Warning Box -->
 			<div id="warning" aria-live="assertive" aria-atomic="true" aria-relevant="text" class="mdl-snackbar 	mdl-js-snackbar">

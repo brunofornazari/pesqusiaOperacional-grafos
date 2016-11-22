@@ -69,6 +69,11 @@
 	width: 40%;
 }
 
+.gnn-dialog-60{
+	width: 60%;
+	overflow-x: auto;
+}
+
 .gnn-fill-width{
 	width: 100%;
 }

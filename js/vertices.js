@@ -34,6 +34,12 @@ var Vertice = function(content, arestas){
 			}
 
 			_arestas.push(aresta);
+			var matriz = network.main.getMatrizRegistros(),
+				coluna = grafos.getPosicaoMatriz(matriz, this).linha,
+				linha = grafos.getPosicaoMatriz(matriz, aresta).linha;
+
+			_matrizAdj[coluna][linha] = 1;
+			_matrizAdj[linha][coluna] = 1;
 		},
 
 		removeAresta : function(aresta){
@@ -42,6 +48,12 @@ var Vertice = function(content, arestas){
 
 				if(tempAresta.getContent().getNetworkID() == aresta.getContent().getNetworkID()){
 					_arestas.splice(i, 1);
+					var matriz = network.main.getMatrizRegistros(),
+						coluna = grafos.getPosicaoMatriz(matriz, this).linha,
+						linha = grafos.getPosicaoMatriz(matriz, aresta).linha;
+
+					_matrizAdj[coluna][linha] = Infinity;
+					_matrizAdj[linha][coluna] = Infinity;
 					return true;
 				}
 			}

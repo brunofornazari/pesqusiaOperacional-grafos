@@ -11,7 +11,7 @@ grafos.preparaMetodoDeBusca = function(matriz){
 			var linha = matriz[coluna];
 			if(Array.isArray(linha)){
 				for(indice in linha){
-					distancia[coluna].push('∞');
+					distancia[coluna].push(Infinity);
 					visitado[coluna].push(false);
 					 
 				}
@@ -57,15 +57,16 @@ grafos.setDistancia = function(matrizVertice, matrizContent, content, valor){
 
 grafos.getPosicaoMatriz = function(matriz, vertice){
 	if(Array.isArray(matriz)){
-		for(colunaIndex in matriz){
-			for(linhaIndex in matriz[colunaIndex]){
-				if(matriz[colunaIndex][linhaIndex].getContent() === vertice.getContent()){
+		for(var colIn = 0; colIn < matriz.length; colIn += 1){
+			for(var rowIn = 0; rowIn < matriz[colIn].length; rowIn += 1){
+				if(matriz[colIn][rowIn].getContent().getNetworkID() === vertice.getContent().getNetworkID()){
 					return {
-						coluna : colunaIndex,
-						linha : linhaIndex
-					};
+						coluna: colIn,
+						linha: rowIn
+					}
 				}
 			}
 		}
 	}
 };
+

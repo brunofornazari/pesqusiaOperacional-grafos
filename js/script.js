@@ -1,4 +1,5 @@
-var network = {};
+var network = {},
+	_matrizAdj = [];
 /*	
 mixNodes(matrizExemplo);
 var verticesList = [];
@@ -43,17 +44,9 @@ for(elemento in matrizExemplo){
 	network.manager.friendshipManager = new BadgeManager(friendshipsBadge);
 
 	network.main = new Network();
-	warningBox = new WarningBox('#warning.mdl-js-snackbar'),
+	warningBox = new WarningBox('#warning.mdl-js-snackbar');
 
-	//renderListOfGraphs(table, verticesList);
-	//loadExemplosRegistros();
-	
-
-	tableChildren =  table.children('tbody').children('tr');
-
-	table.ready(function(){
-		//renderDistances(table, grafos.metodosBusca.largura(matrizExemplo));
-	});
+	loadExemplosRegistros();
 	
 })();
 

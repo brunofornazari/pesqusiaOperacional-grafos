@@ -109,20 +109,22 @@ var WarningBox = function(containerTag){
 	}
 }
 
-grafos.metodosBusca.largura = function(matriz, verticeInicial){
+grafos.metodosBusca.largura = function(matriz, verticeInicial, distancia, visitado, coluna){
 	var fila = [],
 		first,
 		distancia,
 		visitado,
-		d = 0;
+		d = 0,
+		coluna = coluna || 0;
 
 	try{
 		if(Array.isArray(matriz)){
 			var inicializacao = grafos.preparaMetodoDeBusca(matriz);
 
 			first = verticeInicial || matriz[0][0];
-			distancia = inicializacao.distancia;
-			visitado = inicializacao.visitado;
+			distancia = distancia || inicializacao.distancia;
+			visitado = visitado || inicializacao.visitado;
+
 
 			 if(first.getContent() === matriz[0][0].getContent()){
 			 	visitado[0][0] = true;
@@ -134,24 +136,42 @@ grafos.metodosBusca.largura = function(matriz, verticeInicial){
 
 			fila.push(first);
 
-			fila.forEach(function(vertice, index, fila){
-				var arestas = vertice.getArestas();
+			while(fila.length > 0){
+				var vertice = fila[0],
+					arestas = vertice.getArestas()
+					coluna = grafos.getPosicaoMatriz(matriz, vertice).linha;
+
 				d += 1;
 				for(arestaIndex in arestas){
-					var vertice = arestas[arestaIndex],
-						posicaoMatriz = grafos.getPosicaoMatriz(matriz, vertice);
+					var verticeAresta = arestas[arestaIndex],
+						posicaoMatriz = grafos.getPosicaoMatriz(matriz, verticeAresta);
 
-					if(visitado[posicaoMatriz.coluna][posicaoMatriz.linha] === false){
-						visitado[posicaoMatriz.coluna][posicaoMatriz.linha] = true;
-						distancia[posicaoMatriz.coluna][posicaoMatriz.linha] = d;
+					if(visitado[coluna][posicaoMatriz.linha] === false){
+						visitado[coluna][posicaoMatriz.linha] = true;
+						visitado[posicaoMatriz.linha][posicaoMatriz.coluna] = true;
+						distancia[coluna][posicaoMatriz.linha] = d;
+						distancia[posicaoMatriz.linha][posicaoMatriz.coluna] = d;
 
-						for(arestasIndex in vertice.getArestas()){
-							fila.push(vertice.getArestas()[arestasIndex]);
+						
+						for(arestasIndex in verticeAresta.getArestas()){
+							if(verticeAresta.getArestas()[arestasIndex].getContent().getNetworkID() !== vertice.getContent().getNetworkID()){
+								fila.push(verticeAresta.getArestas()[arestasIndex]);
+							}	
 						}
 					}
 					continue;
+				}  
+				fila.shift();
+				if(fila.length == 0){
+					for(var row = 0; row < visitado.length; row += 1){
+						if(!visitado[0][row]){
+							grafos.metodosBusca.largura(matriz, matriz[0][row], distancia, visitado);
+						}
+						
+					}
 				}
-			});
+
+			};
 			return distancia;
 		}
 	} catch (err){
@@ -159,6 +179,104 @@ grafos.metodosBusca.largura = function(matriz, verticeInicial){
 	}
 	
 };
+
+grafos.executaLarguraTotal = function(matriz){
+	var distancia;
+	for(var i = 0; i < matriz.length; i += 1){
+		coluna = i;
+
+		distancia = grafos.metodosBusca.largura(matriz, matriz[0][i], undefined, distancia, coluna);
+	}
+	return distancia;
+};
+
+grafos.metodosBusca.larguraTotal = function(matriz, verticeInicial, visitado, distancia, coluna){
+	var visitado = visitado || [],
+		distancia = distancia || [],
+		fila = [],
+		first = verticeInicial || matriz[0][0],
+		d = 0;
+
+	if(visitado.length == 0){
+		for(var i = 0; i < matriz.length; i += 1){
+			visitado[i] = false;
+		}
+	}
+
+	if(distancia.length == 0){
+		for(var col = 0; col < matriz.length; col += 1){
+			if(!Array.isArray(distancia[col])){
+				distancia[col] = [];
+			}
+			for(var row = 0; row < matriz[col].length; row += 1){
+				distancia[col][row] = Infinity;
+			}
+		}
+	}
+	distancia[coluna][coluna] = 0;
+	fila.push(first);
+
+	while(fila.length > 0){
+		var vertice = fila[0],
+			posicaoMatriz = grafos.getPosicaoMatriz(matriz, vertice);
+
+		if(!visitado[posicaoMatriz.linha]){
+			visitado[posicaoMatriz.linha] = true;
+		} else {
+			fila.shift();
+			continue;
+		}
+
+		
+
+		if(vertice.getArestas().length > 0){
+			for(var i = 0; i < vertice.getArestas().length; i += 1){
+				if(vertice.getArestas()[i].getContent().getNetworkID() !== vertice.getContent().getNetworkID()){
+					fila.push(vertice.getArestas()[i]);
+				}
+				
+			}
+		}
+	}
+
+	distancia = montaDistancia(fila, coluna);
+
+	return distancia;
+
+};
+
+grafos.metodosBusca.floydWarshall = function (graph) {
+	  dist = init(graph);
+	  var size = graph.length;
+	  for (var k = 0; k < size; k += 1) {
+	    for (var i = 0; i < size; i += 1) {
+	      for (var j = 0; j < size; j += 1) {
+	        if (dist[i][j] > dist[i][k] + dist[k][j]) {
+	          dist[i][j] = dist[i][k] + dist[k][j];
+	        }
+	      }
+	    }
+	  }
+    return dist;
+}
+
+function init(graph) {
+      var dist = [];
+      var size = graph.length;
+      for (var i = 0; i < size; i += 1) {
+        dist[i] = [];
+        for (var j = 0; j < size; j += 1) {
+          if (i === j) {
+            dist[i][j] = 0;
+          } else if (!isFinite(graph[i][j])) {
+            dist[i][j] = Infinity;
+          } else {
+            dist[i][j] = graph[i][j];
+          }
+        }
+      }
+      return dist;
+}
 
 function getRandom(base, fromZero){
 	var value,
@@ -412,9 +530,27 @@ function loadAvailableFriends(dialog, id){
 	if(user){
 		if(user.vertice.getArestas().length > 0){
 			friendList = user.vertice.getArestas();
-			
+			availableList = network.main.getRegistradosShadow(id);
+
+			mainLoop: for(var i = 0; i < friendList.length; i += 1){
+				var friend = friendList[i];
+				innerLoop: for(var index = 0; index < availableList.length; index += 1){
+					var availableFriend = availableList[index].vertice;
+					if(availableFriend.getContent().getNetworkID() === friend.getContent().getNetworkID()){
+						availableList.splice(index, 1);
+						continue mainLoop;
+					}
+				}
+			}
+
+			friendList = availableList;
 		} else {
-			friendList = network.main.getRegistrados();
+			friendList = network.main.getRegistradosShadow(parseInt(id));
+		}
+
+		if(friendList.length == 0){
+			warning.setMessage('Não há amigos para serem adicionados!');
+			return false;
 		}
 
 		table = $(dialog).find('tbody');
@@ -458,6 +594,50 @@ function loadRemoveUserInfo(dialog, userId){
 
 	title.text('Remover ' + user.vertice.getContent().getNome());
 	$(dialog).attr('data-id', userId);
+}
+
+function renderShortestWayTable(dialog){
+	var container = $(dialog),
+		table = $(container.find('table')),
+		body = $(container.find('tbody')),
+		header = $(container.find('thead')),
+		matrizContent = network.main.getMatrizRegistros(),
+		_matrizMenorCaminho;
+
+	body.text('');
+	header.text('');
+	header.append('<tr></tr>');
+
+	_matrizMenorCaminho = grafos.metodosBusca.floydWarshall(_matrizAdj);
+
+	for(var col = 0; col <= matrizContent.length; col += 1){
+		var colIn = col > 0 ? col - 1 : 0,
+			coluna = matrizContent[0][colIn],
+			tRow;
+
+		
+		if(col !== 0){
+			tRow = $(header.find('tr')[0]);
+			tRow.append('<th>' + coluna.getContent().getNome() + '</th>');
+		} else {
+			tRow = $(header.find('tr')[0]);
+			tRow.append('<th></th>');
+			continue;
+		}
+		body.append('<tr></tr>');
+		innerLoop: for(var row = 0; row <= _matrizMenorCaminho[colIn].length; row += 1){
+			var rowIn = row > 0 ? row - 1 : 0,
+				linha = matrizContent[0][colIn],
+				tcRow;
+			if(row === 0){
+				tcRow = $(body.find('tr')[colIn]);
+				tcRow.append('<td>' + linha.getContent().getNome() +  '</td>');
+			} else{
+				tcRow = $(body.find('tr')[colIn]);
+				tcRow.append('<td>' + (_matrizMenorCaminho[colIn][rowIn] === Infinity ? '∞' : _matrizMenorCaminho[colIn][rowIn]) + '</td>')
+			}
+		}
+	}
 }
 
 function onRemoveUser(oSource){
